@@ -11,16 +11,18 @@ import {
   Input, Box, Flex, Button
 } from '@chakra-ui/core';
 
+//import { styled } from 'styled-components';
+
 import Expense from './Components/Expenses/Expense';
 
-const Body = styled.div`
+/* const Body = styled.div`
   position: relative;
   display: flex;
   flex: 1;
   flex-direction: column;
   min-height: 100vh;
   padding: 0 0.7em;
-`;
+`; */
 
 //const AddButton =
 
