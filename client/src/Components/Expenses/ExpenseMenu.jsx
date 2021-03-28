@@ -1,23 +1,27 @@
-import React from 'react'
-import { Flex, Input } from '@chakra-ui/core';
+import styled from 'styled-components';
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 1em 0.5em;
+`;
 
-export default function ExpenseMenu({ expenseName }) {
-    return (
-        <div>
-            <Flex
-                direction="row"
-                padding="1em .5em"
-            >
-                <label>{expenseName}</label>
-                <span>
-                    <Input
-                        placeholder={expenseName}
-                        maxW="15em"
-                        padding="4px 7px"
-                    />
-                </span>
-            </Flex>
-        </div>
-    )
+const ExpenseInput = styled.input`
+  max-width: 15em;
+  padding: 4px 7px;
+`;
+
+export default function ExpenseMenu({ expenseName, expenseMenu }) {
+  return (
+    <div>
+      <Container>
+        <label>{expenseName}</label>
+        <span>
+          <ExpenseInput
+            placeholder={expenseName}
+          />
+        </span>
+      </Container>
+    </div>
+  )
 }
