@@ -7,11 +7,11 @@ const BudgetSchema = new Schema({
     ref: 'users'
   },
   BudgetName: {
-    type: String, required: true, index: true, unique: true
+    type: String, required: true, index: true
   },
   TotalIncome: { type: Number },
   Expenses: {
-    type: Schema.Types.ObjectId,
+    type: [Schema.Types.ObjectId],
     ref: 'expenses'
   }
 }, {

@@ -12,8 +12,12 @@ const UserSchema = new Schema({
   email: {
     type: String
   },
-  account_created: {
+  joined: {
     type: Date, default: Date.now
+  },
+  Budgets: {
+    type: [Schema.Types.ObjectId],
+    ref: 'budget'
   }
 });
 

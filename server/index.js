@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const passport = require('passport');
+const { logError } = require('./middleware');
+
 const path = require('path');
 
 const { seperator } = require('./utils');
@@ -18,6 +19,8 @@ const now = new Date();
 console.log("   " + now.toLocaleString());
 console.log("\n\tSERVER STARTED\n");
 
+console.log(MONGO_URI)
+
 mongoose
   .connect(MONGO_URI, {
     useNewUrlParser: true,
@@ -33,13 +36,15 @@ mongoose
     console.log("\nError,\n\t", error)
   });
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 app.use('/', require('./routes'));
 
-app.use(passport.initialize());
-require('./passport')(passport);
+app.use(logError);
+
+/* app.use(passport.initialize());
+require('./passport')(passport); */
 
 // For Dev Use
 if (NODE_ENV !== "production") {
