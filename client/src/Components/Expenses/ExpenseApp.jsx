@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
+
+import { addExpense, getExpenses } from '../../store/expenseSlice';
 
 import { Button, Input } from '../styles/common';
 
@@ -17,13 +20,16 @@ const ExpenseContainer = styled.div`
 `;
 
 export default function ExpenseApp() {
-  const [expenses, setExpense] = useState([]);
 
-  function addNewExpense(amount, name, type, data) {
-    const expense = { amount, name, type, data };
-    setExpense(expenses.push(expense))
-  }
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getExpenses);
+    console.log('dispatched');
+  })
+
+  const expenses = useSelector((state => state.expenses.expenses));
+  console.log(expenses);
   return (
     <ExpenseContainer>
 
@@ -45,22 +51,12 @@ export default function ExpenseApp() {
   )
 }
 
-function expenseSelector() {
-  let isSelected;
-  return (
-    <select>
-      <option value="">SELECT CURRENCY</option>
-      <option value="CAD">CAD</option>
-      <option value="USD">USD</option>
-    </select>
-  )
-}
 
 function expenseView(expenses) {
   return (
     <div>
       {expenses.map((ex) => (
-        <span>{ex.name}</span>
+        <span key={ex.id}>{ex.title}</span>
       ))}
     </div>
   )
