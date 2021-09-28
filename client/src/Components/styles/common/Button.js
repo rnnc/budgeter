@@ -4,7 +4,7 @@ export default styled.button`
   cursor: pointer;
   
   background: transparent;
-  font: 1.1em 'Roboto', sans-serif;
+  font: 0.8em 'Roboto', sans-serif;
   font-weight: 600;
   padding: ${props => props.padding ? props.padding : `7px 15px`};
   /* outline: none; */
@@ -27,6 +27,25 @@ export default styled.button`
     >svg{
       transform: scale(1.4);
       transition: transform 0.5s;
+    }
+  }
+`;
+
+export const IconButton = styled.button`
+  cursor: pointer;
+  padding: 0.5px;
+  background: transparent;
+  border: none;
+  >svg{
+    color: red;
+    stroke: red;
+    stroke-width: 0.5;
+    transition: transition 0.15s;
+  }
+  &:hover {
+    >svg{
+      transform: scale(1.25);
+      transition: transform 0.15s;
     }
   }
 `;

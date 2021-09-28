@@ -1,63 +1,182 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
 
 import { addExpense, getExpenses } from '../../store/expenseSlice';
 
-import { Button, Input } from '../styles/common';
+import { Button, Input, IconButton } from '../styles/common';
 
-import ExpenseMenu from './ExpenseMenu';
+import { CloseO, Pencil, Comment } from '@styled-icons/evil';
 
-const Title = styled.h2`
-  font-weight: bold;
-`;
+import { ExpenseContainer, ExpenseViewCont }
+  from '../styles/components/ExpenseStyles';
 
-const ExpenseContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 1em;
-  border: 1px solid black;
-`;
+
+import sample_data from '../../sample_data';
 
 export default function ExpenseApp() {
 
   const dispatch = useDispatch();
 
+  const [in_ex_name, setExName] = useState('');
+  const [in_ex_value, setExValue] = useState('');
+  const [in_ex_desc, setExDesc] = useState('');
+
+  const expenses_reducer = useSelector((state => state.expenses));
+  const expenses = expenses_reducer.expenses;
+
   useEffect(() => {
-    dispatch(getExpenses);
-    console.log('dispatched');
-  })
+    // temp, add backend requests
+    // have to use user authentication
+    dispatch(addExpense(sample_data()))
+  }, []);
 
-  const expenses = useSelector((state => state.expenses.expenses));
-  console.log(expenses);
+  function submitNewExpense(e) {
+    e.preventDefault();
+    // confirm dialogue
+    dispatch(addExpense({
+      id: expenses.length + 1,
+      name: in_ex_name,
+      amount: in_ex_value,
+      description: in_ex_descrip,
+
+    }))
+  }
+
   return (
-    <ExpenseContainer>
+    <>
+      <ExpenseContainer>
+        <label> Total Budget </label>
 
-      <label> Total Budget </label>
+        { // only view top 10 of sample data
+          ExpenseView(expenses.slice(0, 10))
+          // remove later when connected to backend
+        }
 
-      <span style={{ padding: "0 1em" }}>
-        <Input
-          placeholder="income"
-        />
-        <Input
-          placeholder="expense name"
-        />
-        <Button> Add Expense </Button>
-      </span>
+        <div style={{ padding: "5px" }}>
+          <span style={{ padding: "0 5px" }}>
+            <Input
+              placeholder="expense value"
+              value={in_ex_value}
+              onChange={e => setExValue(e.target.value)}
+            />
+          </span>
+          <span style={{ padding: "0 5px" }}>
+            <Input
+              placeholder="expense name"
+              value={in_ex_name}
+              onChange={e => setExName(e.target.value)}
+            />
+          </span>
+          <span>
+            <input
+              type="textarea" placeholder="description"
+              value={in_ex_desc}
+              onChange={e => setExDesc(e.target.value)}
+            />
+          </span>
+          <span style={{ padding: "0 5px" }}>
+            <Button onClick={submitNewExpense}>
+              Add Expense
+            </Button>
+          </span >
+        </div>
 
-      {expenseView(expenses)}
-
-    </ExpenseContainer>
+      </ExpenseContainer>
+    </>
   )
 }
 
 
-function expenseView(expenses) {
+function ExpenseView(expenses) {
+
+  const [editExpense, toggleEditExpense] = useState(false);
+  const [showDescription, toggleDescription] = useState([false, 0]);
+
+  function buttonClick(e, type, expense_id) {
+    e.preventDefault();
+    if (type == 'edit') {
+      toggleEditExpense(editExpense => !editExpense);
+      toggleDescription(showDescription =>
+        (editExpense) ? [false, 0] : [true, expense_id]
+      );
+    }
+    if (type == 'descrip') {
+      toggleDescription(showDescription =>
+        showDescription[0] ? [false, 0] : [true, expense_id]
+      );
+    }
+    if (type == 'delete') {
+      if (window.confirm("You sure?"))
+        alert("NOT ALLOWED");
+
+    }
+    if (type == 'save') {
+      toggleEditExpense(false);
+      toggleDescription(false);
+    }
+  }
+
   return (
-    <div>
-      {expenses.map((ex) => (
-        <span key={ex.id}>{ex.title}</span>
-      ))}
-    </div>
+
+    <ExpenseViewCont>
+      {expenses.map((ex) => {
+
+        const expense_out = editExpense
+          ?
+          <>
+            <div> <Input placeholder={ex.name} /></div>
+            <div> <Input placeholder={ex.amount} /></div>
+          </>
+          :
+          <>
+            <div> {ex.name} </div>
+            <div> {ex.amount} </div>
+          </>;
+
+        return (
+          <>
+            <li key={ex.id}>
+
+              {expense_out}
+
+              <div className="buttons">
+                <span>
+                  <IconButton
+                    onClick={(e) => buttonClick(e, "edit", ex.id)}>
+                    <Pencil />
+                  </IconButton>
+                </span>
+                <span>
+                  <IconButton type="descrip"
+                    onClick={(e) => buttonClick(e, "descrip", ex.id)}>
+                    <Comment />
+                  </IconButton>
+                </span>
+                <span>
+                  <IconButton type="delete"
+                    onClick={(e) => buttonClick(e, "delete", ex.id)}>
+                    <CloseO />
+                  </IconButton>
+                </span>
+              </div>
+
+            </li>
+
+            <div
+              className={`descrip ${(!showDescription[0]) ? "hide" : ""}`}
+              hidden={!(showDescription[0] && (showDescription[1] === ex.id))}
+            >
+              DESCRIPTION
+            </div>
+
+
+          </>
+        )
+      })}
+    </ExpenseViewCont>
   )
+}
+
+function ExpenseInputMenu() {
+
 }

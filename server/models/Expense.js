@@ -14,7 +14,7 @@ const ExpenseSchema = new Schema({
     unit: {
       type: String,
       enum: ['DAY, WEEK, MONTH, YEAR'],
-      default: 'MONTH'
+      default: 'WEEK'
     }
   },
   type: {

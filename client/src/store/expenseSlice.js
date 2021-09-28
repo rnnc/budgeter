@@ -4,8 +4,8 @@ import axios from 'axios';
 export const getExpenses = createAsyncThunk(
   "expenses/get",
   async (userInfo, { dispatch, getState }) => {
-    const data = await axios.get("https://jsonplaceholder.typicode.com/posts");
-    return data;
+    const res = await axios.get("https://jsonplaceholder.typicode.com/posts");
+    return res.data;
   }
 )
 
@@ -40,10 +40,22 @@ const expenseSlice = createSlice({
   },
   reducers: {
     addExpense: (state, action) => {
-      state.expenses = []
+      if (Array.isArray)
+        state.expenses.push(...action.payload)
+      else
+        state.expenses.push(action.payload)
     },
     removeExpense: (state, action) => {
-
+      const new_expenses = state.expenses.filter(
+        expense => expense.id !== action.payload
+      );
+      state.expenses = new_expenses;
+    },
+    updateExpense: (state, action) => {
+      const u_index = state.expenses.findIndex(
+        expense => expense.id === action.payload.id
+      );
+      state.expenses.splice(u_index, 1, action.payload);
     },
     clearExpenses: (state, action) => {
       state.expenses = [];
